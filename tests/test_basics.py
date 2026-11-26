@@ -1,13 +1,38 @@
-"""Small unit tests for python-basics/basics.py."""
-from python_basics.basics import grade_student, is_palindrome, word_frequency
+import sys
+from pathlib import Path
 
-def test_is_palindrome_ignores_case_and_punctuation():
-    assert is_palindrome("A man, a plan, a canal: Panama!")
+import pytest
 
-def test_word_frequency_counts():
-    assert word_frequency("Red red blue") == {"red": 2, "blue": 1}
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "python-basics"))
 
-def test_grade_student_returns_average_and_grade():
-    result = grade_student([82, 91, 79])
-    assert result["grade"] == "A"
-    assert result["avg"] == 84.0
+from basics import class_report, fizzbuzz, grade, is_palindrome, word_frequency  # noqa: E402
+
+
+def test_fizzbuzz():
+    assert fizzbuzz(15)[2] == "Fizz"
+    assert fizzbuzz(15)[4] == "Buzz"
+    assert fizzbuzz(15)[-1] == "FizzBuzz"
+    assert fizzbuzz(0) == []
+
+
+def test_is_palindrome():
+    assert is_palindrome("A man, a plan, a canal: Panama")
+    assert not is_palindrome("machine learning")
+
+
+def test_word_frequency():
+    assert word_frequency("the cat and the hat and the bat", top=2) == [("the", 3), ("and", 2)]
+
+
+def test_grade_boundaries():
+    assert grade(90) == "A"
+    assert grade(50) == "D"
+    assert grade(49) == "F"
+    with pytest.raises(ValueError):
+        grade(101)
+
+
+def test_class_report():
+    grades, average = class_report({"A": 90, "B": 50})
+    assert grades == {"A": "A", "B": "D"}
+    assert average == 70

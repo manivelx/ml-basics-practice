@@ -14,4 +14,17 @@ def main():
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
     models = {
-        "Logistic Regression": make_pipeline(StandardScaler(), LogisticRegression(fk­z
+        "Logistic Regression": make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000)),
+        "k-NN (k=5)": make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=5)),
+        "Decision Tree": DecisionTreeClassifier(max_depth=4, random_state=42),
+        "Random Forest": RandomForestClassifier(n_estimators=200, random_state=42),
+    }
+
+    print(f"{'Model':<22} {'mean acc':>8} {'std':>6}")
+    for name, model in models.items():
+        scores = cross_val_score(model, X, y, cv=cv)
+        print(f"{name:<22} {scores.mean():>8.3f} {scores.std():>6.3f}")
+
+
+if __name__ == "__main__":
+    main()
